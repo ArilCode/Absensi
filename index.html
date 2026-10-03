@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Absensi Siswa Aril</title>
+<style>
+:root{--p:#7c3aed;--b:#2563eb;--ink:#201747}
+*{box-sizing:border-box}body{margin:0;padding:18px 13px;font-family:system-ui,Arial,sans-serif;background:linear-gradient(135deg,#ede9fe,#dbeafe,#fce7f3);color:var(--ink);min-height:100vh}
+.wrap{max-width:520px;margin:auto}.hero{padding:24px 20px;color:white;border-radius:24px;background:linear-gradient(135deg,#6d28d9,#2563eb);box-shadow:0 12px 30px #4f46e544;margin-bottom:16px}
+.brand{font-size:11px;letter-spacing:2px;font-weight:800;opacity:.85}h1{font-size:27px;margin:9px 0}.hero p{font-size:13px;margin:0;opacity:.9}.clock{margin-top:18px;padding:13px;border-radius:15px;background:#ffffff20}
+#time{font-size:28px;font-weight:800}#date{font-size:12px}.wib{display:inline-block;margin-top:8px;padding:5px 10px;background:#ffffff25;border-radius:20px;font-size:11px}
+.card{background:#fff;border-radius:21px;padding:21px;margin-bottom:15px;box-shadow:0 8px 25px #312e8110}.card h2{font-size:19px;margin:0 0 5px}.sub{font-size:12px;color:#817b98;margin:0 0 19px}
+label.title{display:block;font-size:13px;font-weight:750;margin:0 0 8px}input[type=text]{width:100%;padding:14px;border:2px solid #e9e5f5;border-radius:12px;font-size:15px;outline:none;margin-bottom:18px}input:focus{border-color:var(--p)}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}.opt input{display:none}.opt span{display:block;text-align:center;padding:14px 5px;border:2px solid #eeeaf7;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer}.opt input:checked+span{border-color:var(--p);background:#f3e8ff;color:#6d28d9}
+button{border:0;border-radius:12px;font-weight:750;cursor:pointer}.send{width:100%;padding:16px;color:#fff;background:linear-gradient(135deg,#7c3aed,#2563eb);font-size:14px}.send:disabled{opacity:.6;cursor:wait}
+.note{text-align:center;color:#88839e;font-size:11px;line-height:1.6;margin-top:12px}.success{display:none;text-align:center;padding:15px;background:#dcfce7;color:#166534;border-radius:12px;margin-top:14px;font-size:13px}.footer{text-align:center;color:#827b9f;font-size:11px;padding:10px 0 20px}#toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,100px);background:#1e1b4b;color:white;padding:13px 18px;border-radius:12px;font-size:13px;transition:.25s;max-width:90%;z-index:5}#toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="brand">ArilCode • STUDENT SYSTEM</div>
+<h1>Absensi Siswa 📚</h1><p>Isi kehadiranmu hari ini dengan mudah!</p>
+<div class="clock"><div id="time">--:--:--</div><div id="date">Memuat tanggal...</div><span class="wib">🌏 Waktu Indonesia Barat (WIB)</span></div>
+</header>
+<section class="card">
+<h2>📝 Form Absensi</h2><p class="sub">Isi data dengan benar sebelum mengirim.</p>
+<form id="form">
+<label class="title" for="name">Nama lengkap siswa</label>
+<input id="name" type="text" maxlength="60" placeholder="Masukkan nama lengkap..." autocomplete="name" required>
+<label class="title">Pilih status kehadiran</label>
+<div class="status">
+<label class="opt"><input type="radio" name="status" value="Hadir" required><span>✅ Hadir</span></label>
+<label class="opt"><input type="radio" name="status" value="Izin"><span>📩 Izin</span></label>
+<label class="opt"><input type="radio" name="status" value="Sakit"><span>🤒 Sakit</span></label>
+<label class="opt"><input type="radio" name="status" value="Alfa"><span>❌ Alfa</span></label>
+</div>
+<button class="send" id="send" type="submit">Kirim Absensi 🚀</button>
+<div class="success" id="success">✅ Absensi berhasil dikirim ke guru!</div>
+</form>
+<p class="note">Data absensi tersimpan aman di Supabase. Guru bisa lihat rekap di halaman guru.</p>
+</section>
+<div class="footer">Made with by ArilCode</div>
+</div>
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = "https://yrycrxdceukuiqtyielu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlyeWNyeGRjZXVrdWlxdHlpZWx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1OTM2NDIsImV4cCI6MjEwNjE2OTY0Mn0.UheqY6RVyeNB8A7OThpEwwWYYqzUPgt7SuMRhQJy7ak";
+
+const $ = id => document.getElementById(id);
+const TZ = "Asia/Jakarta";
+function dateKey(d=new Date()){
+  return new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+}
+function dateLabel(d=new Date()){
+  return new Intl.DateTimeFormat("id-ID",{timeZone:TZ,weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(d);
+}
+function timeLabel(d=new Date()){
+  return new Intl.DateTimeFormat("id-ID",{timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(d);
+}
+function clock(){
+ const n=new Date(); 
+ $("time").textContent=timeLabel(n);
+ $("date").textContent=dateLabel(n);
+}
+clock();setInterval(clock,1000);
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2800);}
+
+$("form").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const name=$("name").value.trim().replace(/\s+/g," ");
+ const status=document.querySelector('input[name="status"]:checked')?.value;
+ if(!name||!status){toast("Isi nama dan pilih status dahulu.");return;}
+
+ const btn=$("send");btn.disabled=true;btn.textContent="Menyimpan...";
+ $("success").style.display="none";
+ const sentAt=new Date();
+
+ try{
+   const res = await fetch(`${SUPABASE_URL}/rest/v1/absensi`,{
+     method:"POST",
+     headers:{
+       "apikey": SUPABASE_KEY,
+       "Authorization": `Bearer ${SUPABASE_KEY}`,
+       "Content-Type":"application/json",
+       "Prefer":"return=minimal"
+     },
+     body: JSON.stringify({
+  tanggal: dateLabel(sentAt),
+  jam: timeLabel(sentAt),
+  nama: name,
+  status: status
+})
+   });
+   if(!res.ok) throw new Error("Gagal simpan");
+   $("form").reset();
+   $("success").style.display="block";
+   $("success").textContent = `✅ ${name} - ${status} berhasil disimpan!`;
+   toast("Absensi berhasil disimpan!");
+ }catch(err){
+   console.error(err);
+   toast("Gagal menyimpan. Cek internet.");
+ }finally{
+   btn.disabled=false;btn.textContent="Kirim Absensi 🚀";
+ }
+});
+</script>
+</body>
+</html>
