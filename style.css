@@ -91,3 +91,12 @@ form.locked{opacity:.45;pointer-events:none;filter:grayscale(.4)}
 .srv-penuh{background:#fce7f3;border-color:#db2777}
 .srv-lainnya{background:#ede9fe;border-color:#7c3aed}
 .srv-offline{background:#e5e7eb;border-color:#6b7280}
+
+.contact a {
+  color: #f59e0b;
+  text-decoration: none;
+}
+
+.contact a:hover {
+  text-decoration: underline;
+}
