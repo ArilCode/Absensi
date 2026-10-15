@@ -27,9 +27,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-title" content="Absensi SMANDA" />
 <link rel="manifest" href="./site.webmanifest" />
-<link rel="stylesheet" href="./skeleton.css">
+<link rel="stylesheet" href="./css/skeleton.css">
 <noscript><style>.wrap.loading>*:not(#pageSk){visibility:visible!important}#pageSk{display:none}</style></noscript>
-<link rel="stylesheet" href="./style.css" />
+<link rel="stylesheet" href="./css/style.css" />
 <script>
 document.documentElement.classList.add("skl");
 setTimeout(function(){document.documentElement.classList.remove("skl");},8000); // pengaman
@@ -169,6 +169,8 @@ setTimeout(function(){document.documentElement.classList.remove("skl");},8000); 
   <div class="success" id="kSuccess"></div>
 </form>
 
+<a href="https://edit-qr-scan-absensi.vercel.app/" class="linkEditor" target="_blank">🎨 Ubah Style Kartu QR</a>
+
 <p class="note">data tersimpan di DataBase</p>
 </section>
 <div class="footer">© <script>document.write(new Date().getFullYear())</script> • Made with by ACE (ArilCode Engineer) <br />
@@ -178,8 +180,8 @@ setTimeout(function(){document.documentElement.classList.remove("skl");},8000); 
 </div>
 <div id="toast"></div>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./main.js"></script>
-<script src="./khusus.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/khusus.js"></script>
 <script>
 (function(){
   var h=document.documentElement,w=document.querySelector(".wrap"),t0=Date.now(),done=false;
@@ -202,5 +204,29 @@ setTimeout(function(){document.documentElement.classList.remove("skl");},8000); 
   setTimeout(selesai,6000);
 })();
 </script>
+
+<link rel="stylesheet" href="./css/bot.css">
+<script>
+window.BOT_CONFIG={
+  id:"absensi", nama:"Absento 🤖📸", avatar:"🤖",
+  sapa:"Halo! Aku Absento, asisten absen paling semangat sejagat kelas! 🙋‍♂️ Mau tanya apa?",
+  gakTau:"Waduh, Absento belum ngerti pertanyaan itu 😵 Coba tanya soal cara absen, scan QR, atau status ya!",
+  faq:[
+    {kw:["cara absen","bagaimana cara absen","gimana absen","cara scan","langkah absen","panduan absen"],jawab:function(){
+      const on=(typeof modeSekali!=="undefined")&&modeSekali;
+      const dasar=["1. Buka link absensi.","2. Izinkan \"izinkan saat aplikasi digunakan\" (jika muncul).","3. Scan atau upload QR-nya (klik gambar di samping tanda \"X\" pada kamera scan)."];
+      const on1=["4. Pilih status (hadir/izin/sakit).","5. Klik \"Kirim Absensi\"."];
+      const off1=["4. Pilih mapel.","5. Pilih guru (otomatis terpilih setelah pilih mapel).","6. Pilih status (hadir/izin/sakit).","7. Klik \"Kirim Absensi\"."];
+      return "Begini caranya ya! 😄<br>"+dasar.concat(on?on1:off1).join("<br>");
+    }},
+    {kw:["qr tidak terbaca","gagal scan","kamera tidak bisa","ga kebaca"],jawab:"Pastikan kartu QR tidak buram/terlipat dan pencahayaan cukup. Kalau masih gagal, pakai tombol galeri untuk upload foto QR-nya 📷"},
+    {kw:["lupa bawa kartu","kartu hilang","tidak punya qr"],jawab:"Kalau kartu QR hilang atau ketinggalan, bilang ke guru/wali kelas ya, nanti bisa direset atau dicetak ulang 🖨️"},
+    {kw:["absensi ditutup","tidak bisa absen","kenapa terkunci"],jawab:"Mungkin sudah lewat jam tutup, belum masuk jam buka, atau hari ini libur 🏖️ Cek info di atas form."},
+    {kw:["apa guna aplikasi ini","ini aplikasi apa","buat apa"],jawab:"Ini sistem absensi digital pakai QR Code. Scan kartu, pilih status, selesai! Anti titip absen 😎"},
+    {kw:["kamu siapa","siapa kamu","nama kamu"],jawab:"Aku Absento! 🤖📸 Robot kecil di pojok layar yang bantu kamu absen."}
+  ]
+};
+</script>
+<script src="./js/bot.js"></script>
 </body>
 </html>

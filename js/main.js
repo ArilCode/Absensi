@@ -102,6 +102,21 @@ const KONFIG_KELAS = {
 }
 };
 
+// D
+let _actx=null;
+function actx(){if(!_actx){try{_actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return _actx;}
+function nada(freq,durasi,delay=0,tipe='sine',vol=0.18){
+  const c=actx();if(!c)return;
+  const t0=c.currentTime+delay;
+  const o=c.createOscillator(),g=c.createGain();
+  o.type=tipe;o.frequency.setValueAtTime(freq,t0);
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+0.015);g.gain.exponentialRampToValueAtTime(0.0001,t0+durasi);
+  o.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+durasi+0.05);
+}
+function bunyiSukses(){nada(880,0.12,0,'sine');nada(1318,0.16,0.1,'sine');}
+function bunyiGagal(){nada(220,0.22,0,'sawtooth',0.14);nada(160,0.25,0.12,'sawtooth',0.14);}
+document.addEventListener("pointerdown",()=>{actx();},{once:true});
+
 const $ = id => document.getElementById(id);
 const TZ = "Asia/Jakarta";
 const HDR = {"apikey":SUPABASE_KEY,"Authorization":`Bearer ${SUPABASE_KEY}`};
@@ -193,14 +208,23 @@ function isiMapel(){
 async function renderMapelHari(){
   const inf=await infoAbsen();
   let libur=null;
+    if(inf.belum_buka){
+    setModeSekali(false);
+    $("jadwalInfo").classList.add("liburBox");
+    $("jadwalInfo").innerHTML=`⏳ <b>ABSENSI BELUM DIBUKA</b><br>Mulai pukul ${esc(inf.jam_buka||'06:00')} WIB`;
+    kunciForm(true,`⏳ Absensi baru dibuka pukul ${inf.jam_buka||'06:00'} WIB`);
+    $("mapel").innerHTML='<option value="">-- Belum dibuka --</option>';
+    $("guru").innerHTML='<option value="">-- Belum dibuka --</option>';
+    $("send").textContent="Belum dibuka ⏳";
+    return;
+  }
   if(inf.libur)libur={emoji:"🏖️",alasan:inf.libur};
   else if(!inf.ok){const l=await cekLibur();if(l.libur)libur=l;}
   if(libur){setModeSekali(false);renderLibur(libur);return;}
     if (inf.tutup) {
     setModeSekali(false);
-    $("jadwalInfo").classList.add("liburBox");
-    $("jadwalInfo").innerHTML = "⏰ <b>ABSENSI DITUTUP</b><br>Batas absen hari ini pukul 17.00 WIB";
-    kunciForm(true, "⏰ Absensi hari ini sudah ditutup (pukul 17.00)");
+        $("jadwalInfo").innerHTML = `⏰ <b>ABSENSI DITUTUP</b><br>Batas absen hari ini pukul ${esc(inf.jam_tutup||'17:00')} WIB`;
+    kunciForm(true, `⏰ Absensi hari ini sudah ditutup (pukul ${inf.jam_tutup||'17:00'})`);
     $("mapel").innerHTML = '<option value="">-- Ditutup --</option>';
     $("guru").innerHTML = '<option value="">-- Ditutup --</option>';
     $("send").textContent = "Ditutup 🔒";
@@ -307,7 +331,10 @@ function setPreview(src,state,teks){
   fr.classList.remove("scanning","ok","bad");
   if(state)fr.classList.add(state);
   $("scanBadge").textContent=teks||"";
+  if(state==="ok")bunyiSukses();else if(state==="bad")bunyiGagal();
 }
+
+
 
 function isiIdentitas(o){
   $("outNama").textContent=o.nama||"-";
@@ -340,7 +367,7 @@ function ambilFrame(){
 }
 
 async function bukaScan(){
-  if(typeof Html5Qrcode==="undefined"){toast("Library scanner belum termuat, cek internet");return;}
+  if(typeof Html5Qrcode==="undefined"){toast("Belum termuat, cek internet");return;}
   if(scanner)return;
   $("readerBox").style.display="block";
   $("camSk").style.display="block";          // skeleton selagi kamera menyala
@@ -370,11 +397,10 @@ let modeSekali=false;
 async function infoAbsen(){
   try{
     const res=await fetch(`${SUPABASE_URL}/rest/v1/rpc/info_absen`,{method:"POST",headers:JSONH,body:"{}"});
-    const j=await res.json();
-    const r=Array.isArray(j)?j[0]:j;
-    if(res.ok&&r)return {sekali:!!r.sekali,libur:r.libur||null,tutup:!!r.tutup,ok:true};
+    const j=await res.json(); const r=Array.isArray(j)?j[0]:j;
+    if(res.ok&&r)return {sekali:!!r.sekali,libur:r.libur||null,tutup:!!r.tutup,belum_buka:!!r.belum_buka,jam_buka:r.jam_buka,jam_tutup:r.jam_tutup,ok:true};
   }catch(e){}
-  return {sekali:false,libur:null,tutup:false,ok:false};
+  return {sekali:false,libur:null,tutup:false,belum_buka:false,jam_buka:'06:00',jam_tutup:'17:00',ok:false};
 }
 
 function setModeSekali(on){
