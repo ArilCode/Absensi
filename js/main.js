@@ -115,6 +115,7 @@ function nada(freq,durasi,delay=0,tipe='sine',vol=0.18){
 }
 function bunyiSukses(){nada(880,0.12,0,'sine');nada(1318,0.16,0.1,'sine');}
 function bunyiGagal(){nada(220,0.22,0,'sawtooth',0.14);nada(160,0.25,0.12,'sawtooth',0.14);}
+function getar(pola){try{if(navigator.vibrate)navigator.vibrate(pola);}catch(e){}}
 document.addEventListener("pointerdown",()=>{actx();},{once:true});
 
 const $ = id => document.getElementById(id);
@@ -221,9 +222,10 @@ async function renderMapelHari(){
   if(inf.libur)libur={emoji:"🏖️",alasan:inf.libur};
   else if(!inf.ok){const l=await cekLibur();if(l.libur)libur=l;}
   if(libur){setModeSekali(false);renderLibur(libur);return;}
-    if (inf.tutup) {
+      if (inf.tutup) {
     setModeSekali(false);
-        $("jadwalInfo").innerHTML = `⏰ <b>ABSENSI DITUTUP</b><br>Batas absen hari ini pukul ${esc(inf.jam_tutup||'17:00')} WIB`;
+    $("jadwalInfo").classList.add("liburBox");
+    $("jadwalInfo").innerHTML = `⏰ <b>ABSENSI DITUTUP</b><br>Batas absen hari ini pukul ${esc(inf.jam_tutup||'17:00')} WIB`;
     kunciForm(true, `⏰ Absensi hari ini sudah ditutup (pukul ${inf.jam_tutup||'17:00'})`);
     $("mapel").innerHTML = '<option value="">-- Ditutup --</option>';
     $("guru").innerHTML = '<option value="">-- Ditutup --</option>';
@@ -331,7 +333,8 @@ function setPreview(src,state,teks){
   fr.classList.remove("scanning","ok","bad");
   if(state)fr.classList.add(state);
   $("scanBadge").textContent=teks||"";
-  if(state==="ok")bunyiSukses();else if(state==="bad")bunyiGagal();
+  if(state==="ok"){bunyiSukses();getar([40]);}
+else if(state==="bad"){bunyiGagal();getar([60,60,60]);}
 }
 
 

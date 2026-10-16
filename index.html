@@ -175,7 +175,7 @@ setTimeout(function(){document.documentElement.classList.remove("skl");},8000); 
 </section>
 <div class="footer">© <script>document.write(new Date().getFullYear())</script> • Made with by ACE (ArilCode Engineer) <br />
 <span class="contact">
-  <a href="mailto: arilhidayat202@gmail.com">arilhidayat202@gmail.com</a>
+  <a href="mailto:arilhidayat202@gmail.com">arilhidayat202@gmail.com</a>
     </span></div>
 </div>
 <div id="toast"></div>
@@ -209,21 +209,20 @@ setTimeout(function(){document.documentElement.classList.remove("skl");},8000); 
 <script>
 window.BOT_CONFIG={
   id:"absensi", nama:"Absento 🤖📸", avatar:"🤖",
-  sapa:"Halo! Aku Absento, asisten absen paling semangat sejagat kelas! 🙋‍♂️ Mau tanya apa?",
-  gakTau:"Waduh, Absento belum ngerti pertanyaan itu 😵 Coba tanya soal cara absen, scan QR, atau status ya!",
+  sapa:"Halo! Aku Absento, asisten absen paling semangat sejagat kelas! 🙋‍♂️ Pilih pertanyaanmu di bawah ya!",
   faq:[
-    {kw:["cara absen","bagaimana cara absen","gimana absen","cara scan","langkah absen","panduan absen"],jawab:function(){
+    {q:"Bagaimana cara absen?",jawab:function(){
       const on=(typeof modeSekali!=="undefined")&&modeSekali;
       const dasar=["1. Buka link absensi.","2. Izinkan \"izinkan saat aplikasi digunakan\" (jika muncul).","3. Scan atau upload QR-nya (klik gambar di samping tanda \"X\" pada kamera scan)."];
       const on1=["4. Pilih status (hadir/izin/sakit).","5. Klik \"Kirim Absensi\"."];
       const off1=["4. Pilih mapel.","5. Pilih guru (otomatis terpilih setelah pilih mapel).","6. Pilih status (hadir/izin/sakit).","7. Klik \"Kirim Absensi\"."];
       return "Begini caranya ya! 😄<br>"+dasar.concat(on?on1:off1).join("<br>");
     }},
-    {kw:["qr tidak terbaca","gagal scan","kamera tidak bisa","ga kebaca"],jawab:"Pastikan kartu QR tidak buram/terlipat dan pencahayaan cukup. Kalau masih gagal, pakai tombol galeri untuk upload foto QR-nya 📷"},
-    {kw:["lupa bawa kartu","kartu hilang","tidak punya qr"],jawab:"Kalau kartu QR hilang atau ketinggalan, bilang ke guru/wali kelas ya, nanti bisa direset atau dicetak ulang 🖨️"},
-    {kw:["absensi ditutup","tidak bisa absen","kenapa terkunci"],jawab:"Mungkin sudah lewat jam tutup, belum masuk jam buka, atau hari ini libur 🏖️ Cek info di atas form."},
-    {kw:["apa guna aplikasi ini","ini aplikasi apa","buat apa"],jawab:"Ini sistem absensi digital pakai QR Code. Scan kartu, pilih status, selesai! Anti titip absen 😎"},
-    {kw:["kamu siapa","siapa kamu","nama kamu"],jawab:"Aku Absento! 🤖📸 Robot kecil di pojok layar yang bantu kamu absen."}
+    {q:"QR tidak terbaca / gagal scan?",jawab:"Pastikan kartu QR tidak buram/terlipat dan pencahayaan cukup. Kalau masih gagal, pakai tombol galeri untuk upload foto QR-nya 📷"},
+    {q:"Lupa bawa kartu / QR hilang?",jawab:"Bilang ke guru/wali kelas ya, nanti bisa direset atau dicetak ulang 🖨️"},
+    {q:"Kenapa absensi terkunci?",jawab:"Mungkin sudah lewat jam tutup, belum masuk jam buka, atau hari ini libur 🏖️ Cek info di atas form."},
+    {q:"Aplikasi ini buat apa?",jawab:"Sistem absensi digital pakai QR Code. Scan kartu, pilih status, selesai! Anti titip absen 😎"},
+    {q:"Kamu siapa?",jawab:"Aku Absento! 🤖📸 Robot kecil di pojok layar yang bantu kamu absen."}
   ]
 };
 </script>
