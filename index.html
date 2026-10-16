@@ -213,9 +213,9 @@ window.BOT_CONFIG={
   faq:[
     {q:"Bagaimana cara absen?",jawab:function(){
       const on=(typeof modeSekali!=="undefined")&&modeSekali;
-      const dasar=["1. Buka link absensi.","2. Izinkan \"izinkan saat aplikasi digunakan\" (jika muncul).","3. Scan atau upload QR-nya (klik gambar di samping tanda \"X\" pada kamera scan)."];
-      const on1=["4. Pilih status (hadir/izin/sakit).","5. Klik \"Kirim Absensi\"."];
-      const off1=["4. Pilih mapel (jika ada, jika tidak lanjut langkah no.6","5. Pilih guru (otomatis terpilih setelah pilih mapel) - (jika ada, jika tidak lanjut lanjut langkah no.6.","6. Pilih status (hadir/izin/sakit).","7. Klik \"Kirim Absensi\"."];
+      const dasar=["1. Buka link absensi,","2. Izinkan \"izinkan saat aplikasi digunakan\" (jika muncul),","3. Scan atau upload QR-nya (klik gambar di samping tanda \"X\" pada kamera scan),"];
+      const on1=["4. Pilih status (hadir/izin/sakit),","5. Klik \"Kirim Absensi\"."];
+      const off1=["4. Pilih mapel - (jika ada, jika tidak lanjut langkah no.6)","5. Pilih guru (otomatis terpilih setelah pilih mapel) - (jika ada, jika tidak lanjut langkah no.6),","6. Pilih status (hadir/izin/sakit),","7. Klik \"Kirim Absensi\"."];
       return "Begini caranya ya! 😄<br>"+dasar.concat(on?on1:off1).join("<br>");
     }},
     {q:"QR tidak terbaca / gagal scan?",jawab:"Pastikan kartu QR tidak buram/terlipat dan pencahayaan cukup. Kalau masih gagal, pakai tombol galeri untuk upload foto QR-nya 📷"},
